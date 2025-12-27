@@ -87,9 +87,9 @@
         return new THREE.Color().setHSL(hue, saturation, lightness);
     }
 
-    const platformCount = 4500;
-    const platformRadius = 60;
-    const platformThickness = 5;
+    const platformCount = 6500;
+    const platformRadius = 80;
+    const platformThickness = 8;
     for (let i = 0; i < platformCount; i++) {
         const radius = platformRadius * Math.sqrt(Math.random());
         const angle = Math.random() * Math.PI * 2;
@@ -110,20 +110,20 @@
         };
     }
 
-const heartMainTotal = Math.floor(6200 * 1.2);
-const heartCoreTotal = Math.floor(1800 * 1.2);
-const heartBlendTotal = Math.floor(2400 * 1.2);
-const heartTotal = heartMainTotal + heartCoreTotal + heartBlendTotal;
+    const heartMainTotal = Math.floor(6200 * 1.2);
+    const heartCoreTotal = Math.floor(1800 * 1.2);
+    const heartBlendTotal = Math.floor(2400 * 1.2);
+    const heartTotal = heartMainTotal + heartCoreTotal + heartBlendTotal;
 const heartScaleX = 1.2;
-const heartScaleY = 1.25;
+const heartScaleY = 1.375;
 const heartScaleZ = 10.5;
-const heartTimeline = [
-    {time: 0, scale: 0.05, pulse: 0, twist: 0, glow: 0.1},
-    {time: 2.2, scale: 0.32, pulse: 0.28, twist: 0.2, glow: 0.35},
-    {time: 4.8, scale: 0.72, pulse: 0.5, twist: 0.5, glow: 0.65},
-    {time: 7.1, scale: 0.95, pulse: 0.75, twist: 0.75, glow: 0.85},
-    {time: 9.6, scale: 0.9, pulse: 0.95, twist: 1, glow: 1}
-];
+    const heartTimeline = [
+        {time: 0, scale: 0.05, pulse: 0, twist: 0, glow: 0.1},
+        {time: 2.2, scale: 0.32, pulse: 0.28, twist: 0.2, glow: 0.35},
+        {time: 4.8, scale: 0.72, pulse: 0.5, twist: 0.5, glow: 0.65},
+        {time: 7.1, scale: 0.95, pulse: 0.75, twist: 0.75, glow: 0.85},
+        {time: 9.6, scale: 0.9, pulse: 0.95, twist: 1, glow: 1}
+    ];
 
     for (let i = 0; i < heartMainTotal; i++) {
         const t = Math.random() * Math.PI * 2;
@@ -155,7 +155,7 @@ const heartTimeline = [
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
             (Math.random() - 0.5) * contourFactor * 0.45;
-    const heartColor = getHeartColor();
+        const heartColor = getHeartColor();
         addParticle(
             x,
             y,
@@ -166,56 +166,56 @@ const heartTimeline = [
         );
     }
 
-for (let i = 0; i < heartBlendTotal; i++) {
-    const t = Math.random() * Math.PI * 2;
-    const radial = THREE.MathUtils.lerp(0.42 + Math.random() * 0.4, 0.96, Math.pow(Math.random(), 1.15));
-    const {x: baseX, y: baseY} = heartCurve(t);
-    const contourFactor = 1 - radial;
-    const jitterClamp = THREE.MathUtils.lerp(0.32, 0.16, radial);
-    const x =
-        baseX * radial * heartScaleX +
-        (Math.random() - 0.5) * contourFactor * 0.55 * jitterClamp;
-    const y =
-        baseY * radial * heartScaleY +
-        34 +
-        (Math.random() - 0.5) * contourFactor * 0.65 * jitterClamp +
-        THREE.MathUtils.lerp(0.2, 0.95, radial);
-    const arcProfile = Math.sin((1 - Math.pow(radial, 0.9)) * Math.PI * 0.58);
-    const depthRange = THREE.MathUtils.lerp(1, 4.2, arcProfile);
-    const depth =
-        Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
-        (Math.random() - 0.5) * contourFactor * 0.4;
-    const blendColor = getHeartColor();
-    addParticle(
-        x,
-        y,
-        depth * (heartScaleZ / 10),
-        1.72 + Math.random() * 0.85,
-        0.58 + Math.random() * 0.32,
-        blendColor
-    );
-}
-
-for (let i = 0; i < heartCoreTotal; i++) {
-    const t = Math.random() * Math.PI * 2;
-    const radial = 0.18 + Math.pow(Math.random(), 1.35) * 0.82;
+    for (let i = 0; i < heartBlendTotal; i++) {
+        const t = Math.random() * Math.PI * 2;
+        const radial = THREE.MathUtils.lerp(0.42 + Math.random() * 0.4, 0.96, Math.pow(Math.random(), 1.15));
         const {x: baseX, y: baseY} = heartCurve(t);
         const contourFactor = 1 - radial;
-    const jitterEnvelope = 0.35 + Math.random() * 0.25;
+        const jitterClamp = THREE.MathUtils.lerp(0.32, 0.16, radial);
         const x =
-        baseX * radial * heartScaleX * (0.94 + Math.random() * 0.05) +
-        (Math.random() - 0.5) * jitterEnvelope * 0.55;
+            baseX * radial * heartScaleX +
+            (Math.random() - 0.5) * contourFactor * 0.55 * jitterClamp;
         const y =
-        baseY * radial * heartScaleY * (0.93 + Math.random() * 0.07) +
-        34 +
-        Math.sin(t * 1.8) * 0.65 +
-        (Math.random() - 0.5) * jitterEnvelope * 0.55;
-    const arcProfile = Math.pow(1 - radial, 0.85);
-    const depthRange = THREE.MathUtils.lerp(1.1, 4.4, arcProfile);
+            baseY * radial * heartScaleY +
+            34 +
+            (Math.random() - 0.5) * contourFactor * 0.65 * jitterClamp +
+            THREE.MathUtils.lerp(0.2, 0.95, radial);
+        const arcProfile = Math.sin((1 - Math.pow(radial, 0.9)) * Math.PI * 0.58);
+        const depthRange = THREE.MathUtils.lerp(1, 4.2, arcProfile);
+        const depth =
+            Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
+            (Math.random() - 0.5) * contourFactor * 0.4;
+        const blendColor = getHeartColor();
+        addParticle(
+            x,
+            y,
+            depth * (heartScaleZ / 10),
+            1.72 + Math.random() * 0.85,
+            0.58 + Math.random() * 0.32,
+            blendColor
+        );
+    }
+
+    for (let i = 0; i < heartCoreTotal; i++) {
+        const t = Math.random() * Math.PI * 2;
+        const radial = 0.18 + Math.pow(Math.random(), 1.35) * 0.82;
+        const {x: baseX, y: baseY} = heartCurve(t);
+        const contourFactor = 1 - radial;
+        const jitterEnvelope = 0.35 + Math.random() * 0.25;
+        const x =
+            baseX * radial * heartScaleX * (0.94 + Math.random() * 0.05) +
+            (Math.random() - 0.5) * jitterEnvelope * 0.55;
+        const y =
+            baseY * radial * heartScaleY * (0.93 + Math.random() * 0.07) +
+            34 +
+            Math.sin(t * 1.8) * 0.65 +
+            (Math.random() - 0.5) * jitterEnvelope * 0.55;
+        const arcProfile = Math.pow(1 - radial, 0.85);
+        const depthRange = THREE.MathUtils.lerp(1.1, 4.4, arcProfile);
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.15 +
             (Math.random() - 0.5) * contourFactor * 0.35;
-    const coreColor = getHeartColor();
+        const coreColor = getHeartColor();
         addParticle(
             x,
             y,
@@ -226,10 +226,10 @@ for (let i = 0; i < heartCoreTotal; i++) {
         );
     }
 
-    const cubeCount = 1500;
-    const cubeSize = 51;
+    const cubeCount = 2500;
+    const cubeSize = 63;
     const cubeHeight = 71;
-    const cubeThickness = platformThickness;
+    const cubeThickness = 8;
     const cubeHalfThickness = cubeThickness / 2;
     for (let i = 0; i < cubeCount; i++) {
         const face = i % 6;
@@ -285,16 +285,16 @@ for (let i = 0; i < heartCoreTotal; i++) {
 
     const circleTexture = createCircleTexture();
 
-        const material = new THREE.PointsMaterial({
-            size: 1,
-            map: circleTexture,
-            vertexColors: true,
-            transparent: true,
-            depthWrite: false,
-            opacity: 0.8,
-            alphaTest: 0.15,
-            blending: THREE.NormalBlending
-        });
+    const material = new THREE.PointsMaterial({
+        size: 1,
+        map: circleTexture,
+        vertexColors: true,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.8,
+        alphaTest: 0.15,
+        blending: THREE.NormalBlending
+    });
     const mainParticles = new THREE.Points(geometry, material);
     scene.add(mainParticles);
 
@@ -556,7 +556,19 @@ for (let i = 0; i < heartCoreTotal; i++) {
         const hue = Math.random();
         const saturation = 0.6 + Math.random() * 0.3;
         const lightness = 0.45 + Math.random() * 0.35;
-        swirlParticleData.push({radius, angle, height, delay, absorbTime, speed, hue, saturation, lightness});
+        const orbitFactor = THREE.MathUtils.clamp((radius - 50) / 40, 0, 1);
+        swirlParticleData.push({
+            radius,
+            angle,
+            height,
+            delay,
+            absorbTime,
+            speed,
+            hue,
+            saturation,
+            lightness,
+            orbitFactor
+        });
         const color = new THREE.Color().setHSL(hue, saturation, lightness);
         swirlParticleColors[i * 3] = color.r;
         swirlParticleColors[i * 3 + 1] = color.g;
@@ -568,8 +580,8 @@ for (let i = 0; i < heartCoreTotal; i++) {
     const swirlParticleGeometry = new THREE.BufferGeometry();
     swirlParticleGeometry.setAttribute('position', new THREE.BufferAttribute(swirlParticlePositions, 3));
     swirlParticleGeometry.setAttribute('color', new THREE.BufferAttribute(swirlParticleColors, 3));
-    const swirlParticleMaterial = new THREE.PointsMaterial({
-        size: 1,
+const swirlParticleMaterial = new THREE.PointsMaterial({
+    size: 0.8,
         map: circleTexture,
         vertexColors: true,
         transparent: true,
@@ -794,15 +806,26 @@ for (let i = 0; i < heartCoreTotal; i++) {
         const swirlParticleAttr = swirlParticleGeometry.getAttribute('position');
         const swirlParticleColorAttr = swirlParticleGeometry.getAttribute('color');
         for (let i = 0; i < swirlParticleCount; i++) {
-            const {radius, angle, height, delay, absorbTime, speed, hue, saturation, lightness} = swirlParticleData[i];
+            const {
+                radius,
+                angle,
+                height,
+                delay,
+                absorbTime,
+                speed,
+                hue,
+                saturation,
+                lightness,
+                orbitFactor
+            } = swirlParticleData[i];
             const life = Math.max(0, elapsed - delay);
             const absorbProgress = THREE.MathUtils.clamp(life / absorbTime, 0, 1);
             const currentRadius =
                 THREE.MathUtils.lerp(radius, 3, absorbProgress) * (0.9 + pulseStrength * 0.25);
-            const currentAngle =
-                angle -
-                elapsed * speed * (0.7 + pulseStrength * 0.6) +
-                absorbProgress * Math.PI * (2.6 + pulseStrength * 1.4);
+    const spinStrength = (0.01 + pulseStrength * 0.1) * orbitFactor;
+    const absorbTwist = absorbProgress * Math.PI * (2.2 + pulseStrength * 1.1) * orbitFactor;
+    const currentAngle =
+        orbitFactor <= 0.15 ? angle : angle - elapsed * speed * spinStrength + absorbTwist;
             const currentHeight = THREE.MathUtils.lerp(
                     height,
                     heartCenter.y + 8 + glowStrength * 4,
