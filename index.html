@@ -80,6 +80,13 @@
         return new THREE.Color().setHSL(Math.random(), 0.7 + Math.random() * 0.25, 0.5 + Math.random() * 0.35);
     }
 
+    function getHeartColor() {
+        const hue = 0.985 + (Math.random() - 0.5) * 0.008;
+        const saturation = 0.8 + (Math.random() - 0.5) * 0.015;
+        const lightness = 0.56 + (Math.random() - 0.5) * 0.015;
+        return new THREE.Color().setHSL(hue, saturation, lightness);
+    }
+
     const platformCount = 4500;
     const platformRadius = 60;
     const platformThickness = 5;
@@ -148,11 +155,7 @@ const heartTotal = heartMainTotal + heartCoreTotal + heartBlendTotal;
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
             (Math.random() - 0.5) * contourFactor * 0.45;
-    const heartColor = new THREE.Color().setHSL(
-        0.98 + (Math.random() - 0.5) * 0.01,
-        0.82 + (Math.random() - 0.5) * 0.02,
-        0.62 + (Math.random() - 0.5) * 0.02
-    );
+    const heartColor = getHeartColor();
         addParticle(
             x,
             y,
@@ -182,11 +185,7 @@ for (let i = 0; i < heartBlendTotal; i++) {
     const depth =
         Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
         (Math.random() - 0.5) * contourFactor * 0.4;
-    const blendColor = new THREE.Color().setHSL(
-        0.98 + (Math.random() - 0.5) * 0.01,
-        0.82 + (Math.random() - 0.5) * 0.02,
-        0.62 + (Math.random() - 0.5) * 0.02
-    );
+    const blendColor = getHeartColor();
     addParticle(
         x,
         y,
@@ -216,11 +215,7 @@ for (let i = 0; i < heartCoreTotal; i++) {
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.15 +
             (Math.random() - 0.5) * contourFactor * 0.35;
-    const coreColor = new THREE.Color().setHSL(
-        0.98 + (Math.random() - 0.5) * 0.01,
-        0.82 + (Math.random() - 0.5) * 0.02,
-        0.62 + (Math.random() - 0.5) * 0.02
-    );
+    const coreColor = getHeartColor();
         addParticle(
             x,
             y,
@@ -290,16 +285,16 @@ for (let i = 0; i < heartCoreTotal; i++) {
 
     const circleTexture = createCircleTexture();
 
-    const material = new THREE.PointsMaterial({
-        size: 1.2,
-        map: circleTexture,
-        vertexColors: true,
-        transparent: true,
-        depthWrite: false,
-        opacity: 0.9,
-        alphaTest: 0.2,
-        blending: THREE.AdditiveBlending
-    });
+        const material = new THREE.PointsMaterial({
+            size: 1,
+            map: circleTexture,
+            vertexColors: true,
+            transparent: true,
+            depthWrite: false,
+            opacity: 0.8,
+            alphaTest: 0.15,
+            blending: THREE.NormalBlending
+        });
     const mainParticles = new THREE.Points(geometry, material);
     scene.add(mainParticles);
 
