@@ -103,10 +103,10 @@
         };
     }
 
-    const heartMainTotal = 6200;
-    const heartCoreTotal = 2600;
-    const heartBlendTotal = 1800;
-    const heartTotal = heartMainTotal + heartCoreTotal + heartBlendTotal;
+const heartMainTotal = 6200;
+const heartCoreTotal = 1800;
+const heartBlendTotal = 2400;
+const heartTotal = heartMainTotal + heartCoreTotal + heartBlendTotal;
     const heartScaleX = 1.58;
     const heartScaleY = 1.6;
     const heartScaleZ = 13.2;
@@ -148,11 +148,11 @@
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
             (Math.random() - 0.5) * contourFactor * 0.45;
-        const heartColor = new THREE.Color().setHSL(
-            THREE.MathUtils.clamp(0.98 - fillBoost * 0.08, 0.92, 1),
-            0.72 + fillBoost * 0.2,
-            0.5 + fillBoost * 0.25
-        );
+    const heartColor = new THREE.Color().setHSL(
+        0.98 + (Math.random() - 0.5) * 0.01,
+        0.82 + (Math.random() - 0.5) * 0.02,
+        0.62 + (Math.random() - 0.5) * 0.02
+    );
         addParticle(
             x,
             y,
@@ -163,65 +163,64 @@
         );
     }
 
-    for (let i = 0; i < heartBlendTotal; i++) {
-        const t = Math.random() * Math.PI * 2;
-        const radial = THREE.MathUtils.lerp(0.38 + Math.random() * 0.35, 0.92, Math.pow(Math.random(), 1.4));
-        const {x: baseX, y: baseY} = heartCurve(t);
-        const contourFactor = 1 - radial;
-        const blendWeight = THREE.MathUtils.smootherstep(radial, 0.35, 0.95);
-        const jitterClamp = THREE.MathUtils.lerp(0.38, 0.18, blendWeight);
-        const x =
-            baseX * radial * heartScaleX +
-            (Math.random() - 0.5) * contourFactor * 0.65 * jitterClamp;
-        const y =
-            baseY * radial * heartScaleY +
-            34 +
-            (Math.random() - 0.5) * contourFactor * 0.75 * jitterClamp +
-            THREE.MathUtils.lerp(0.2, 1.0, radial);
-        const arcProfile = Math.sin((1 - Math.pow(radial, 0.9)) * Math.PI * 0.6);
-        const depthRange = THREE.MathUtils.lerp(1.1, 4.6, arcProfile);
-        const depth =
-            Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.14 +
-            (Math.random() - 0.5) * contourFactor * 0.4;
-        const blendColor = new THREE.Color().setHSL(
-            THREE.MathUtils.clamp(0.96 - blendWeight * 0.12, 0.85, 1),
-            0.75 + (1 - blendWeight) * 0.15,
-            0.55 + (1 - blendWeight) * 0.2
-        );
-        addParticle(
-            x,
-            y,
-            depth * (heartScaleZ / 10),
-            1.78 + Math.random() * 0.95,
-            0.6 + Math.random() * 0.35,
-            blendColor
-        );
-    }
+for (let i = 0; i < heartBlendTotal; i++) {
+    const t = Math.random() * Math.PI * 2;
+    const radial = THREE.MathUtils.lerp(0.42 + Math.random() * 0.4, 0.96, Math.pow(Math.random(), 1.15));
+    const {x: baseX, y: baseY} = heartCurve(t);
+    const contourFactor = 1 - radial;
+    const jitterClamp = THREE.MathUtils.lerp(0.32, 0.16, radial);
+    const x =
+        baseX * radial * heartScaleX +
+        (Math.random() - 0.5) * contourFactor * 0.55 * jitterClamp;
+    const y =
+        baseY * radial * heartScaleY +
+        34 +
+        (Math.random() - 0.5) * contourFactor * 0.65 * jitterClamp +
+        THREE.MathUtils.lerp(0.2, 0.95, radial);
+    const arcProfile = Math.sin((1 - Math.pow(radial, 0.9)) * Math.PI * 0.58);
+    const depthRange = THREE.MathUtils.lerp(1, 4.2, arcProfile);
+    const depth =
+        Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.13 +
+        (Math.random() - 0.5) * contourFactor * 0.4;
+    const blendColor = new THREE.Color().setHSL(
+        0.98 + (Math.random() - 0.5) * 0.01,
+        0.82 + (Math.random() - 0.5) * 0.02,
+        0.62 + (Math.random() - 0.5) * 0.02
+    );
+    addParticle(
+        x,
+        y,
+        depth * (heartScaleZ / 10),
+        1.72 + Math.random() * 0.85,
+        0.58 + Math.random() * 0.32,
+        blendColor
+    );
+}
 
-    for (let i = 0; i < heartCoreTotal; i++) {
-        const t = Math.random() * Math.PI * 2;
-        const radial = Math.pow(Math.random(), 2.35);
+for (let i = 0; i < heartCoreTotal; i++) {
+    const t = Math.random() * Math.PI * 2;
+    const radial = 0.18 + Math.pow(Math.random(), 1.35) * 0.82;
         const {x: baseX, y: baseY} = heartCurve(t);
         const contourFactor = 1 - radial;
-        const jitterEnvelope = 0.45 + Math.random() * 0.35;
+    const jitterEnvelope = 0.35 + Math.random() * 0.25;
         const x =
-            baseX * radial * heartScaleX * (0.92 + Math.random() * 0.08) +
-            (Math.random() - 0.5) * jitterEnvelope * 0.6;
+        baseX * radial * heartScaleX * (0.94 + Math.random() * 0.05) +
+        (Math.random() - 0.5) * jitterEnvelope * 0.55;
         const y =
-            baseY * radial * heartScaleY * (0.9 + Math.random() * 0.1) +
-            34 +
-            Math.sin(t * 2) * 0.8 +
-            (Math.random() - 0.5) * jitterEnvelope * 0.65;
-        const arcProfile = Math.pow(1 - radial, 0.8);
-        const depthRange = THREE.MathUtils.lerp(1.2, 4.8, arcProfile);
+        baseY * radial * heartScaleY * (0.93 + Math.random() * 0.07) +
+        34 +
+        Math.sin(t * 1.8) * 0.65 +
+        (Math.random() - 0.5) * jitterEnvelope * 0.55;
+    const arcProfile = Math.pow(1 - radial, 0.85);
+    const depthRange = THREE.MathUtils.lerp(1.1, 4.4, arcProfile);
         const depth =
             Math.sin((Math.random() - 0.5) * Math.PI) * depthRange * heartScaleZ * 0.15 +
             (Math.random() - 0.5) * contourFactor * 0.35;
-        const coreColor = new THREE.Color().setHSL(
-            0.98,
-            0.86 + Math.random() * 0.08,
-            0.5 + Math.random() * 0.12
-        );
+    const coreColor = new THREE.Color().setHSL(
+        0.98 + (Math.random() - 0.5) * 0.01,
+        0.82 + (Math.random() - 0.5) * 0.02,
+        0.62 + (Math.random() - 0.5) * 0.02
+    );
         addParticle(
             x,
             y,
@@ -350,7 +349,7 @@
                                    verticalSpeed = 0.22,
                                    wrapRadius = 18,
                                    hueRange = 0.22,
-                                   sparkleSize = 7,
+                                   sparkleSize = 5,
                                    noiseAmplitude = 5
                                }) {
         const segments = 320;
@@ -372,12 +371,12 @@
                 map: circleTexture,
                 color: color || 0xffffff,
                 transparent: true,
-                opacity: 0.95,
+                opacity: 0.35,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending
             })
         );
-        spark.scale.set(sparkleSize, sparkleSize, 1);
+        spark.scale.set(sparkleSize * 0.8, sparkleSize * 0.8, 1);
         swirlGroup.add(spark);
         const baseColor = color ? ribbonBaseColor.set(color) : getVibrantColor();
         baseColor.getHSL(ribbonHSL);
@@ -412,7 +411,7 @@
         speed: 0.2,
         tilt: 0.7,
         wrapRadius: 24,
-        sparkleSize: 9,
+        sparkleSize: 6,
         noiseAmplitude: 7
     });
     createSwirlRibbon({
@@ -424,7 +423,7 @@
         tilt: 0.8,
         verticalLoops: 2,
         wrapRadius: 22,
-        sparkleSize: 7,
+        sparkleSize: 5,
         noiseAmplitude: 6
     });
     createSwirlRibbon({
@@ -436,7 +435,7 @@
         tilt: 0.65,
         verticalLoops: 1.4,
         wrapRadius: 28,
-        sparkleSize: 10,
+        sparkleSize: 7,
         noiseAmplitude: 8
     });
     createSwirlRibbon({
@@ -448,7 +447,7 @@
         tilt: 0.55,
         verticalLoops: 1.2,
         wrapRadius: 34,
-        sparkleSize: 11,
+        sparkleSize: 8,
         noiseAmplitude: 9
     });
     createSwirlRibbon({
@@ -460,7 +459,7 @@
         tilt: 0.9,
         verticalLoops: 2.4,
         wrapRadius: 18,
-        sparkleSize: 8,
+        sparkleSize: 5,
         noiseAmplitude: 5.5
     });
 
@@ -741,9 +740,9 @@
             }
             posAttrRibbon.needsUpdate = true;
             colorAttrRibbon.needsUpdate = true;
-            const sparkScale = sparkleSize * (0.6 + glowStrength * 0.9);
+            const sparkScale = sparkleSize * (0.35 + glowStrength * 0.6);
             spark.scale.set(sparkScale, sparkScale, 1);
-            spark.material.opacity = 0.25 + glowStrength * 0.5;
+            spark.material.opacity = 0.12 + glowStrength * 0.25;
             line.material.opacity =
                 0.35 + glowStrength * 0.4 + Math.sin(elapsed * 0.5 + phase) * 0.2;
         });
