@@ -278,14 +278,39 @@ const heartScaleZ = 10.5;
     scene.add(mainParticles);
 
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = 7200;
+    const starCount = 14400;
     const starPositions = new Float32Array(starCount * 3);
     const starColors = new Float32Array(starCount * 3);
+
+    function sampleStarColor() {
+        const roll = Math.random();
+        const color = new THREE.Color();
+        if (roll < 0.76) {
+            // vivid reds
+            return color.setHSL(0.98 + Math.random() * 0.01, 0.8 + Math.random() * 0.15, 0.45 + Math.random() * 0.2);
+        }
+        if (roll < 0.88) {
+            // warm oranges
+            return color.setHSL(0.07 + Math.random() * 0.02, 0.85, 0.55 + Math.random() * 0.15);
+        }
+        if (roll < 0.91) {
+            // bright yellows
+            return color.setHSL(0.13 + Math.random() * 0.02, 0.9, 0.6 + Math.random() * 0.1);
+        }
+        if (roll < 0.93) {
+            // crisp whites
+            const lightness = 0.82 + Math.random() * 0.12;
+            return color.setHSL(0, 0, lightness);
+        }
+        // cool blues for the remainder
+        return color.setHSL(0.58 + Math.random() * 0.03, 0.7 + Math.random() * 0.2, 0.55 + Math.random() * 0.15);
+    }
+
     for (let i = 0; i < starCount; i++) {
         starPositions[i * 3] = (Math.random() - 0.5) * 900;
         starPositions[i * 3 + 1] = (Math.random() - 0.5) * 900;
         starPositions[i * 3 + 2] = (Math.random() - 0.5) * 900;
-        const starColor = getVibrantColor();
+        const starColor = sampleStarColor();
         starColors[i * 3] = starColor.r;
         starColors[i * 3 + 1] = starColor.g;
         starColors[i * 3 + 2] = starColor.b;

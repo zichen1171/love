@@ -1,5 +1,23 @@
 import * as THREE from 'three';
 
+function sampleClusterStarColor() {
+    const roll = Math.random();
+    const color = new THREE.Color();
+    if (roll < 0.76) {
+        return color.setHSL(0.98 + Math.random() * 0.01, 0.82 + Math.random() * 0.1, 0.45 + Math.random() * 0.2);
+    }
+    if (roll < 0.88) {
+        return color.setHSL(0.07 + Math.random() * 0.02, 0.85, 0.5 + Math.random() * 0.15);
+    }
+    if (roll < 0.91) {
+        return color.setHSL(0.13 + Math.random() * 0.02, 0.9, 0.58 + Math.random() * 0.1);
+    }
+    if (roll < 0.93) {
+        return color.setHSL(0, 0, 0.82 + Math.random() * 0.12);
+    }
+    return color.setHSL(0.58 + Math.random() * 0.03, 0.7 + Math.random() * 0.2, 0.55 + Math.random() * 0.15);
+}
+
 function createCircleTexture() {
     const size = 64;
     const canvas = document.createElement('canvas');
@@ -36,35 +54,46 @@ function initSolarSystem(stage) {
     ];
 
     const clusters = [];
-    const clusterCount = 128;
-    const minSpacing = 540;
-    const bounds = 4800;
+    const clusterCount = 512;
+    const clusterScale = 0.22;
+    const baseClusterRadius = 520;
+    const clusterRadius = baseClusterRadius * clusterScale + 12;
+    const minSpacing = clusterRadius * 2.3;
+    const baseBounds = 1100;
+    const baseYBounds = baseBounds * 0.35;
     const maxAttempts = 6000;
 
     function generateClusterPosition() {
-        let attempts = 0;
-        while (attempts < maxAttempts) {
-            attempts += 1;
-            const position = new THREE.Vector3(
-                (Math.random() - 0.5) * bounds,
-                (Math.random() - 0.5) * bounds * 0.35,
-                (Math.random() - 0.5) * bounds
-            );
-            const tooClose = clusters.some((cluster) => cluster.position.distanceTo(position) < minSpacing);
+        let reach = Math.max(baseBounds, minSpacing * Math.cbrt(clusters.length + 1) * 0.85);
+        let verticalReach = Math.max(baseYBounds, minSpacing * 0.6);
+        for (let attempts = 0; attempts < maxAttempts; attempts++) {
+            if (attempts !== 0 && attempts % 1200 === 0) {
+                reach *= 1.25;
+                verticalReach *= 1.15;
+            }
+            const radius = reach * Math.pow(Math.random(), 0.65);
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = THREE.MathUtils.randFloatSpread(verticalReach * 2);
+            const z = radius * Math.sin(phi) * Math.sin(theta);
+            const candidate = new THREE.Vector3(x, y, z);
+            const tooClose = clusters.some((cluster) => cluster.position.distanceTo(candidate) < minSpacing);
             if (!tooClose) {
-                return position;
+                return candidate;
             }
         }
         return new THREE.Vector3(
-            (Math.random() - 0.5) * bounds,
-            (Math.random() - 0.5) * bounds * 0.35,
-            (Math.random() - 0.5) * bounds
+            THREE.MathUtils.randFloatSpread(reach * 2),
+            THREE.MathUtils.randFloatSpread(verticalReach * 2),
+            THREE.MathUtils.randFloatSpread(reach * 2)
         );
     }
 
     function createSolarCluster(index) {
         const solarGroup = new THREE.Group();
         solarGroup.position.copy(generateClusterPosition());
+        solarGroup.scale.set(clusterScale, clusterScale, clusterScale);
         solarGroup.rotation.y = Math.random() * Math.PI * 2;
         scene.add(solarGroup);
 
@@ -81,7 +110,7 @@ function initSolarSystem(stage) {
             sunPositions[i * 3] = x;
             sunPositions[i * 3 + 1] = y;
             sunPositions[i * 3 + 2] = z;
-            const color = new THREE.Color().setHSL(0.08 + Math.random() * 0.03, 0.85, 0.55 + Math.random() * 0.1);
+            const color = sampleClusterStarColor();
             sunColors[i * 3] = color.r;
             sunColors[i * 3 + 1] = color.g;
             sunColors[i * 3 + 2] = color.b;
@@ -89,12 +118,13 @@ function initSolarSystem(stage) {
         const sunGeometry = new THREE.BufferGeometry();
         sunGeometry.setAttribute('position', new THREE.BufferAttribute(sunPositions, 3));
         sunGeometry.setAttribute('color', new THREE.BufferAttribute(sunColors, 3));
+        const brightnessAttenuation = 0.6;
         const sunMaterial = new THREE.PointsMaterial({
             size: 14,
             map: circleTexture,
             vertexColors: true,
             transparent: true,
-            opacity: 0.95,
+            opacity: 0.95 * brightnessAttenuation,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
@@ -120,6 +150,10 @@ function initSolarSystem(stage) {
             pivot.quaternion.setFromAxisAngle(axis, tiltAngle);
             const wobble = THREE.MathUtils.degToRad(2 + Math.random() * 6);
             solarGroup.add(pivot);
+            const brightnessBoost = 2;
+            const attenuatedOrbitOpacity = 0.7 * brightnessAttenuation;
+            const basePlanetOpacity = Math.min(1.8, 1 * brightnessBoost) * brightnessAttenuation;
+            const baseSpriteOpacity = Math.min(1.8, 0.95 * brightnessBoost) * brightnessAttenuation;
 
             const orbitPositions = new Float32Array(orbitSegments * 3);
             for (let i = 0; i < orbitSegments; i++) {
@@ -131,11 +165,11 @@ function initSolarSystem(stage) {
             const orbitGeometry = new THREE.BufferGeometry();
             orbitGeometry.setAttribute('position', new THREE.BufferAttribute(orbitPositions, 3));
             const orbitMaterial = new THREE.PointsMaterial({
-                size: 3,
+                size: 1.5,
                 map: circleTexture,
                 color: config.color,
                 transparent: true,
-                opacity: 0.7,
+                opacity: attenuatedOrbitOpacity,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             });
@@ -145,11 +179,11 @@ function initSolarSystem(stage) {
             const planetGeometry = new THREE.BufferGeometry();
             planetGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([config.distance, 0, 0]), 3));
             const planetMaterial = new THREE.PointsMaterial({
-                size: Math.max(7, config.size * 4.2),
+                size: Math.max(14, config.size * 8.4),
                 map: circleTexture,
                 color: config.color,
                 transparent: true,
-                opacity: 1,
+                opacity: basePlanetOpacity,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false
             });
@@ -160,12 +194,12 @@ function initSolarSystem(stage) {
                 map: circleTexture,
                 color: config.color,
                 transparent: true,
-                opacity: 0.95,
+                opacity: baseSpriteOpacity,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending
             });
             const sprite = new THREE.Sprite(spriteMaterial);
-            const spriteSize = Math.max(28, config.size * 18);
+            const spriteSize = Math.max(56, config.size * 36);
             sprite.scale.set(spriteSize, spriteSize, 1);
             pivot.add(sprite);
 
@@ -189,7 +223,8 @@ function initSolarSystem(stage) {
                 attr.setXYZ(0, x, 0, z);
                 attr.needsUpdate = true;
                 sprite.position.set(x, 0, z);
-                sprite.material.opacity = 0.7 + Math.sin(elapsed * 0.6 + config.speed) * 0.25;
+                sprite.material.opacity =
+                    (0.7 + Math.sin(elapsed * 0.6 + config.speed) * 0.25) * brightnessAttenuation;
             });
         });
 
